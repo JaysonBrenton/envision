@@ -70,7 +70,7 @@ public class ModelService {
         });
 
         EntityModeller.on(client).removeAllEntities();
-		deployService.deployEntities();
+		deployService.deployUserArtifacts();
 		deleteExtraHubentities(fieldNames);
     }
 

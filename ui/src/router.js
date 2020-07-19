@@ -93,7 +93,20 @@ const $router = new Router({
         requiresLogin: true,
         checkLogin
       }
-    },
+		},
+		{
+      path: '/integrate/:stepName?',  //url path
+      name: 'root.integrate', //use to navigate to page
+      // lazy-loading of page
+      component: () =>
+        import(/* webpackChunkName: "modeler" */ './views/IntegratePage.vue'),
+      meta: {
+        label: 'Integrate',
+        navArea: 'header',
+        requiresLogin: true,
+        checkLogin
+      }
+		},
     {
       path: '/explore',  //url path
       name: 'root.explorer', //use to navigate to page

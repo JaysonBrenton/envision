@@ -20,7 +20,7 @@
 				v-model="entityName"
 				data-cy="addEntity.entityNameField"
 			></v-text-field>
-				<v-expansion-panels v-model="advancedState">
+			<v-expansion-panels v-model="advancedState">
 				<v-expansion-panel data-cy="addEntity.advancedBtn">
 					<v-expansion-panel-header>Advanced</v-expansion-panel-header>
 					<v-expansion-panel-content>

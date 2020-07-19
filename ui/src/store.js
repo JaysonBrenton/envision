@@ -6,6 +6,8 @@ import searchApi from './api/SearchApi';
 import modelApi from './api/ModelApi';
 import triplesApi from './api/TriplesApi';
 import masteringApi from './api/MasteringApi';
+import flowsApi from './api/FlowsApi';
+import entitiesApi from './api/EntitiesApi';
 import crudApi from './api/CRUDApi';
 import axios from 'axios';
 import * as _ from 'lodash';
@@ -94,11 +96,13 @@ const mastering = {
 				commit('setBlocks', blocks)
 			})
 		},
-		getDocs({ commit }, uris) {
+		getDocs({ state, commit }, uris) {
 			uris.forEach(uri => {
-				masteringApi.getDoc(uri).then(doc => {
-					commit('setDoc', { uri, doc })
-				})
+				if (!state.docs[uri]) {
+					masteringApi.getDoc(uri).then(doc => {
+						commit('setDoc', { uri, doc })
+					})
+				}
 			})
 		},
 		merge({ commit }, { uris, flowName, stepNumber, preview }) {
@@ -446,12 +450,14 @@ const model = {
 				if (model && state.models.findIndex(m => m.name === model.name) >= 0) {
 					commit('setModel', model);
 				}
-				else {
+				else if (state.models.length > 0) {
 					await dispatch('save', state.models[0])
 				}
 			}
 			catch(err) {
-				await dispatch('save', state.models[0])
+				if (state.models.length > 0) {
+					await dispatch('save', state.models[0])
+				}
 			}
 		},
 		async save({ commit, dispatch }, data) {
@@ -559,6 +565,66 @@ const crud = {
 	}
 }
 
+const flows = {
+	namespaced: true,
+	state: {
+		entities: [],
+		flows: {}
+	},
+	mutations: {
+		setFlows(state, flows) {
+			state.flows = flows.reduce((output, flow) => {
+				output[flow.name] = flow
+				return output
+			}, {})
+		},
+		setFlow(state, flow) {
+			Vue.set(state.flows, flow.name, flow)
+		},
+		deleteFlow(state, flow) {
+			Vue.delete(state.flows, flow.name)
+		},
+		setFlowSteps(state, {flowName, steps}) {
+			Vue.set(state.flows[flowName], 'steps', steps)
+		},
+		setEntities(state, entities) {
+			//state.entities = entities
+			state.entities = entities.reduce((output, entity) => {
+				output[entity.info.title] = {
+					properties: entity.definitions.definitions[entity.info.title].properties,
+					filename: entity.filename,
+					info: entity.info
+				}
+				return output
+			}, {})
+		}
+	},
+	actions: {
+		getFlows({ commit }) {
+			return flowsApi.getFlows().then(result => {
+				commit('setFlows', result)
+			})
+		},
+		getFlow({ commit }, flowId = 'Envision') {
+			return flowsApi.getFlow(flowId).then(result => {
+				return commit('setFlow', result)
+			})
+		},
+		saveFlow({ commit }, flow) {
+			commit('setFlow', flow)
+			return flowsApi.saveFlow(flow)
+		},
+		async deleteFlow({ commit }, flow) {
+			await flowsApi.deleteFlow(flow.id)
+			commit('deleteFlow', flow)
+		},
+		getEntities({ commit }) {
+			return entitiesApi.getEntities().then(result => {
+				commit('setEntities', result)
+			})
+		}
+	}
+}
 
 export default new Vuex.Store({
 	strict: debug,
@@ -592,6 +658,7 @@ export default new Vuex.Store({
 		model,
 		triples,
 		mastering,
-		crud
+		crud,
+		flows
 	}
 });

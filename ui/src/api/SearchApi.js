@@ -230,5 +230,14 @@ export default {
 			console.error('error:', error);
 			return error;
 		});
-	}
+	},
+	getResultsByQuery(database, ctsQuery, count, urisOnly) {
+		return axios.get(`/v1/resources/mlCollections?rs:sourceQuery=${encodeURIComponent(ctsQuery)}&rs:count=${encodeURIComponent(count)}&rs:database=${encodeURIComponent(database)}&rs:urisOnly=${encodeURIComponent(urisOnly)}`)
+			.then(response => response.data)
+			.catch(error => {
+				console.error('error:', error);
+				return error;
+			});
+
+  }
 };
