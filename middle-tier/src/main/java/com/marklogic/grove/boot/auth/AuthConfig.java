@@ -131,6 +131,8 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
             "/**/*.css",
             "/index.html",
             "/login",
+			"upload",
+			"integrate",
             "/model",
             "/explore",
 			"/explore/compare",

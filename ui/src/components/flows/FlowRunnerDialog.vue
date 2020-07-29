@@ -109,6 +109,7 @@ export default {
 	methods: {
 		runSteps() {
 			flowsApi.runSteps(this.flow.name, this.selectedFlowSteps)
+			this.close()
 		},
 		close() {
 			this.open = false
@@ -120,16 +121,22 @@ export default {
 
 <style lang="less" scoped>
 /deep/ .v-dialog {
-	height: 90%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
 
 	form {
-		height: 100%
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
 	}
 	.v-card {
 		display: flex;
 		height: 100%;
 		flex-direction: column;
-		flex: 0 0 auto;
+		flex: 1;
+		overflow: hidden;
 	}
 	.v-card__text {
 		overflow-y: auto;

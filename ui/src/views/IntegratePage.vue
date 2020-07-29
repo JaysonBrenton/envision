@@ -120,7 +120,7 @@ export default {
 			}
 		},
 		flow() {
-			return this.flows['Envision']
+			return this.flows[this.flowName]
 		},
 		routeParams() {
 			let p = {}
@@ -130,6 +130,7 @@ export default {
 			return p
 		},
 		...mapState({
+			flowName: state => state.auth.username,
 			flows: state => state.flows.flows,
 			entities: state => state.flows.entities
 		})

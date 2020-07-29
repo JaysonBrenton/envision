@@ -22,8 +22,10 @@ import java.net.URLDecoder;
 @RequestMapping("/api/crud")
 public class CrudController extends AbstractController {
 
-    @Autowired
-    private HubConfigImpl hubConfig;
+	@Autowired
+	CrudController(HubConfigImpl hubConfig) {
+		super(hubConfig);
+	}
 
     @RequestMapping(method = RequestMethod.GET)
     void getDoc(@RequestParam String uri, @RequestParam String database, HttpServletResponse response) throws IOException {

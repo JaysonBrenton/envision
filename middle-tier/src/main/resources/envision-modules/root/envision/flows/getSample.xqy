@@ -42,7 +42,7 @@ declare function local:speed-walk-json($o, $nodes as node(), $parent) {
 declare function local:walk($o, $n as node()) {
 	for $xpath in map:keys($o)
 	let $obj := map:get($o, $xpath)
-	let $node := (xdmp:value("$n/" || $xpath))[1]
+	let $node := (xdmp:value("$n/*[fn:local-name(.) = '" || $xpath || "']"))[1]
 	let $oo := json:object()
 	let $ns := fn:namespace-uri-from-QName(fn:node-name($node))
 	let $ns-prefix := fn:prefix-from-QName(fn:node-name($node))

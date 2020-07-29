@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.hub.impl.HubConfigImpl;
 import com.marklogic.hub.mapping.MappingFunctions;
 import com.marklogic.hub.mapping.MappingValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ public class FlowsController extends AbstractController {
 	final private FlowsService flowsService;
 
 	@Autowired
-	FlowsController(FlowsService flowsService) {
+	FlowsController(HubConfigImpl hubConfig, FlowsService flowsService) {
+		super(hubConfig);
 		this.flowsService = flowsService;
 	}
 

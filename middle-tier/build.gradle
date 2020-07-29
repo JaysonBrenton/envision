@@ -18,8 +18,8 @@ apply plugin: "java"
 apply plugin: "io.spring.dependency-management"
 apply plugin: "com.moowork.node"
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = "9"
+targetCompatibility = "9"
 
 ext {
 	taskGroup = "Envision UI"
@@ -49,6 +49,8 @@ dependencies {
 	compile group: 'org.springframework.security', name: 'spring-security-web', version: springVersion
 
 	compile "org.springframework.boot:spring-boot-starter-web"
+	compile "org.springframework.boot:spring-boot-starter-websocket"
+
 	compile "com.marklogic:marklogic-data-hub:5.1.0"
 
 	compile("com.marklogic:marklogic-spring-web:1.0")

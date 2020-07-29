@@ -2,6 +2,7 @@ package com.marklogic.envision.entities;
 
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.hub.entity.HubEntity;
+import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +12,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/entities")
 public class EntitiesController extends AbstractController {
-	private EntityManagerService entityManagerService;
+	final private EntityManagerService entityManagerService;
 
 	@Autowired
-	EntitiesController(EntityManagerService entityManagerService) {
+	EntitiesController(HubConfigImpl hubConfig, EntityManagerService entityManagerService) {
+		super(hubConfig);
 		this.entityManagerService = entityManagerService;
 	}
 

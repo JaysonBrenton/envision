@@ -33,8 +33,8 @@ public class DeployService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	private DocumentPermissionsParser documentPermissionsParser = new DefaultDocumentPermissionsParser();
 
-	private HubConfigImpl hubConfig;
-	private LoadUserArtifactsCommand loadUserArtifactsCommand;
+	final private HubConfigImpl hubConfig;
+	final private LoadUserArtifactsCommand loadUserArtifactsCommand;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -52,6 +52,7 @@ public class DeployService {
 	@Autowired
 	DeployService(HubConfigImpl hubConfig, LoadUserArtifactsCommand loadUserArtifactsCommand) {
 		this.hubConfig = hubConfig;
+		this.loadUserArtifactsCommand = loadUserArtifactsCommand;
 	}
 
 	private void init() {
@@ -66,7 +67,6 @@ public class DeployService {
 		this.flowPath = hubConfig.getFlowsDir();
 		this.finalDocMgr = finalClient.newJSONDocumentManager();
 		this.stagingDocMgr = stagingClient.newJSONDocumentManager();
-		this.loadUserArtifactsCommand = loadUserArtifactsCommand;
 	}
 
 	public boolean needsInstall() {

@@ -1,14 +1,14 @@
 <template>
 	<v-container>
-    <v-row>
-      <div v-if="targetEntity && !(docUris && docUris.length > 0)">
+		<v-row>
+			<div v-if="targetEntity && !(docUris && docUris.length > 0)">
 				<em>Unable to find source documents using the specified collection or query.</em>
 				<br><br>
 				<em>Ingest some data that mapping can use as reference and/or edit the step </em>
 				<br>
 				<em>settings to use a source collection or query that will return some results.</em>
 			</div>
-    </v-row>
+		</v-row>
 
 		<v-col>
 			<v-row>
@@ -87,11 +87,7 @@
 												</template>
 												<v-card>
 													<v-card-text>
-														<v-treeview dense :items="sampleDoc" open-all>
-															<template v-slot:label="treeProps">
-																<span @click="insertField(treeProps.item, prop)"><span v-if="treeProps.item.nsPrefix">{{'{' + treeProps.item.nsPrefix + ':}'}}</span><span v-else-if="treeProps.item.ns">{{'{' + treeProps.item.ns + '}'}}</span>{{treeProps.item.name}}</span>
-															</template>
-														</v-treeview>
+														<v-treeview activatable dense :items="sampleDoc" open-all hoverable @update:active="insertField($event[0], prop)" />
 													</v-card-text>
 												</v-card>
 											</v-menu>
@@ -128,6 +124,7 @@ export default {
 	},
 	data() {
 		return {
+			activeFields: [],
 			entityProperties: [],
 			expandedProps: {},
 			propSearch: null,
@@ -248,14 +245,33 @@ export default {
 		toggleProp(propName) {
 			this.$set(this.expandedProps, propName, !this.expandedProps[propName])
 		},
-		insertField(field, prop) {
+		insertField(fieldName, prop) {
+			const field = this.sampleDoc.find(d => d.id === fieldName)
+			if (!field) {
+				return
+			}
 			let context = ''
 			if (prop.parent) {
 				if (prop.parent && prop.parent.mapping && prop.parent.mapping.sourcedFrom) {
 					context = prop.parent.mapping.sourcedFrom + '/'
 				}
 			}
-			this.$set(prop.mapping, 'sourcedFrom', (prop.mapping.sourcedFrom || '') + field.xpath.replace(context, ''))
+			let sourcedFrom = prop.mapping.sourcedFrom || ''
+			let xpath = field.xpath
+			if (/(&|>|<|'|"|}|{|\s)/g.test(xpath)) {
+				xpath = `*[local-name(.)='${this.escapeXML(xpath)}']`
+			}
+			this.$set(prop.mapping, 'sourcedFrom', sourcedFrom + xpath.replace(context, ''))
+		},
+		escapeXML(input = '') {
+			return input
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/'/g, '&apos;')
+				.replace(/"/g, '&quot;')
+				.replace(/{/g, '&#123;')
+				.replace(/}/g, '&#125;');
 		},
 		insertFunction(func, prop) {
 			this.$set(prop.mapping, 'sourcedFrom', (prop.mapping.sourcedFrom || '') + func.signature)
@@ -295,7 +311,7 @@ export default {
 		},
 		loadSampleDoc() {
 			flowsApi.getSampleDoc(this.sampleDocUri, this.mapping.namespaces)
-				.then(doc => this.sampleDoc = doc)
+				.then(doc => this.sampleDoc = doc.map(d => ({ ...d, id: d.name})))
 				.then(this.validate)
 				.catch((err) => console.error(err))
 		},
@@ -325,9 +341,9 @@ export default {
 
 <style lang="less" scoped>
 div.target-entity-title {
-  font-weight: normal;
-  margin: 2px 0 29px 0;
-  font-size: 20px;
+	font-weight: normal;
+	margin: 2px 0 29px 0;
+	font-size: 20px;
 }
 
 .v-treeview,
@@ -368,5 +384,9 @@ td.value-column {
 	button {
 		margin-right: 10px;
 	}
+}
+
+/deep/ .v-treeview-node__root {
+	cursor: pointer;
 }
 </style>

@@ -138,15 +138,17 @@ const auth = {
 				state.profile = undefined;
 			}
 		},
-		loggedIn(state, { username, needsInstall }) {
+		async loggedIn(state, { username, needsInstall }) {
 			state.authenticated = true;
 			state.username = username;
 			state.needsInstall = needsInstall;
+			await this.$ws.connect()
 		},
 		loggedOut(state) {
 			state.authenticated = false;
 			state.username = undefined;
 			state.profile = undefined;
+			this.$ws.disconnect()
 		},
 		setProfile(state, { profile }) {
 			state.profile = profile || {};
@@ -157,7 +159,7 @@ const auth = {
 	},
 	actions: {
 		init({ commit, dispatch }) {
-			return authApi.status().then(result => {
+			return authApi.status().then(async result => {
 				if (result.isError) {
 					// error
 					return result;
@@ -167,7 +169,7 @@ const auth = {
 						authenticated: result.authenticated
 					});
 					if (result.authenticated) {
-						dispatch(
+						await dispatch(
 							'loggedIn',
 							{
 								username: result.username,
@@ -175,7 +177,7 @@ const auth = {
 							},
 							{ root: true }
 						);
-						dispatch('getProfile')
+						return dispatch('getProfile')
 					}
 				}
 			});
@@ -605,7 +607,8 @@ const flows = {
 				commit('setFlows', result)
 			})
 		},
-		getFlow({ commit }, flowId = 'Envision') {
+		getFlow({ rootState, commit }) {
+			const flowId = rootState.auth.username
 			return flowsApi.getFlow(flowId).then(result => {
 				return commit('setFlow', result)
 			})

@@ -5,19 +5,23 @@
           <router-view/>
 		</v-main>
     <ml-footer/>
+		<progress-listener />
 	</v-app>
 </template>
 
 <script>
 import Header from '@/components/Header.vue';
 import mlFooter from '@/components/ml-footer.vue';
+import ProgressListener from '@/components/ProgressListener.vue'
+
 import { mapState } from 'vuex'
 
 export default {
   name: 'app',
   components: {
     Header,
-		mlFooter
+		mlFooter,
+		ProgressListener
 	},
 	computed: {
 		isLoggedIn() {
@@ -79,5 +83,15 @@ export default {
 }
 .mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label:hover::before {
 	color: #0511e6;
+}
+
+#app,
+.v-application--wrap {
+	height: 100vh;
+}
+
+.v-main {
+	overflow: auto;
+	flex: 1 1 auto;
 }
 </style>

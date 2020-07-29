@@ -32,6 +32,20 @@ module.exports = {
     port: process.env.VUE_APP_DEV_PORT || 8081,
     https: appFrontendUsesHttps,
     proxy: {
+			'/websocket': {
+				target: middletierUrl,
+				ws: true,
+        secure: false,
+        bypass: function(req) {
+          if (req.url.startsWith('/websocket')) {
+            console.log(
+              'Proxying ' + req.method + ' ' + req.url + ' to ' + middletierUrl
+            );
+          } else {
+            return req.url;
+          }
+        }
+			},
       '/api': {
         target: middletierUrl,
         secure: false,
