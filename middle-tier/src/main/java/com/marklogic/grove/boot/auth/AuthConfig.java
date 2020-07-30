@@ -132,7 +132,7 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
             "/index.html",
             "/login",
 			"/upload",
-			"/integrate",
+			"/integrate/**",
             "/model",
             "/explore",
 			"/explore/compare",
