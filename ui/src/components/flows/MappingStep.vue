@@ -87,7 +87,7 @@
 												</template>
 												<v-card>
 													<v-card-text>
-														<v-treeview activatable dense :items="sampleDoc" open-all hoverable @update:active="insertField($event[0], prop)" />
+														<v-treeview activatable dense item-key="xpath" :items="sampleDoc" open-all return-object hoverable @update:active="insertField($event[0], prop)" />
 													</v-card-text>
 												</v-card>
 											</v-menu>
@@ -245,11 +245,7 @@ export default {
 		toggleProp(propName) {
 			this.$set(this.expandedProps, propName, !this.expandedProps[propName])
 		},
-		insertField(fieldName, prop) {
-			const field = this.sampleDoc.find(d => d.id === fieldName)
-			if (!field) {
-				return
-			}
+		insertField(field, prop) {
 			let context = ''
 			if (prop.parent) {
 				if (prop.parent && prop.parent.mapping && prop.parent.mapping.sourcedFrom) {
@@ -311,7 +307,7 @@ export default {
 		},
 		loadSampleDoc() {
 			flowsApi.getSampleDoc(this.sampleDocUri, this.mapping.namespaces)
-				.then(doc => this.sampleDoc = doc.map(d => ({ ...d, id: d.name})))
+				.then(doc => this.sampleDoc = doc)
 				.then(this.validate)
 				.catch((err) => console.error(err))
 		},

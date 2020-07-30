@@ -1,6 +1,6 @@
 {
 	"lang": "zxx",
-	"name": "Envision-MapCoastalEmployees",
+	"name": "admin-MappingTest",
 	"description": "",
 	"version": 0,
 	"targetEntityType": "http://marklogic.com/envision/Employee-0.0.1/Employee",

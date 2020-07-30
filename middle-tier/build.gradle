@@ -17,6 +17,7 @@ plugins {
 apply plugin: "java"
 apply plugin: "io.spring.dependency-management"
 apply plugin: "com.moowork.node"
+apply plugin: 'idea'
 
 sourceCompatibility = "9"
 targetCompatibility = "9"
@@ -51,7 +52,8 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-web"
 	compile "org.springframework.boot:spring-boot-starter-websocket"
 
-	compile "com.marklogic:marklogic-data-hub:5.1.0"
+	// Issue 30 - upgrade to 5.2 compile "com.marklogic:marklogic-data-hub:5.1.0"
+	compile "com.marklogic:marklogic-data-hub:5.2.1"
 
 	compile("com.marklogic:marklogic-spring-web:1.0")
 
@@ -83,7 +85,7 @@ task installDependencies(type: NpmTask, group: taskGroup) {
 
 task buildUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
 	description = "Builds the UI files so that they can be copied to the Spring Boot application"
-	args = ["run", "build"]
+	args = ["run", (project.ext.env == "cloud") ? "build:cloud" : "build"]
 	execOverrides { it.workingDir = groveUiPath }
 }
 

@@ -1,5 +1,5 @@
 {
-	"name": "Envision",
+	"name": "admin",
 	"description": "null",
 	"batchSize": 100,
 	"threadCount": 4,
@@ -14,7 +14,7 @@
 				"additionalCollections": [],
 				"sourceQuery": "cts.collectionQuery([\"DataSource1\"])",
 				"mapping": {
-					"name": "Envision-MappingTest",
+					"name": "admin-MappingTest",
 					"version": 0
 				},
 				"targetEntity": "Resume",

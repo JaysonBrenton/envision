@@ -8,6 +8,7 @@ Vue.use(Router);
 
 let entryUrl = null
 
+const isTesting = process.env.NODE_ENV === 'test'
 const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 
 const checkLogin = (to, from, next) => {
@@ -60,7 +61,7 @@ const routes = [
 	{
 		path: '/',
 		name: 'root.landing',
-		redirect: '/upload',
+		redirect: isHosted ? '/upload' : '/model',
 		meta: {}
 	},
 	{
@@ -189,7 +190,7 @@ const routes = [
 	}
 ]
 
-if (isHosted) {
+if (isHosted || isTesting) {
 	routes.splice(2, 0, {
 		path: '/integrate/:stepName?',	//url path
 		name: 'root.integrate', //use to navigate to page
@@ -203,7 +204,8 @@ if (isHosted) {
 			checkLogin
 		}
 	})
-} else {
+}
+if (!isHosted || isTesting) {
 	routes.push({
 		path: '/know',	//url path
 		name: 'root.know', //use to navigate to page
