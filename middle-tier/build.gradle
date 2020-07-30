@@ -85,7 +85,7 @@ task installDependencies(type: NpmTask, group: taskGroup) {
 
 task buildUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
 	description = "Builds the UI files so that they can be copied to the Spring Boot application"
-	args = ["run", (project.ext.env == "cloud") ? "build:cloud" : "build"]
+	args = ["run", (project.ext.has("env") && project.ext.env == "cloud") ? "build:cloud" : "build"]
 	execOverrides { it.workingDir = groveUiPath }
 }
 

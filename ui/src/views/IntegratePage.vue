@@ -7,7 +7,7 @@
 				<v-btn @click="showFlowRunner = true">Run Steps</v-btn>
 			</div>
 		</v-layout>
-		<v-layout row>
+		<v-layout v-if="steps && steps.length > 0" row>
 			<draggable v-bind="dragOptions" v-model="steps" class="flex step-scroller md12" draggable=".step-wrapper">
 				<transition-group type="transition" tag="div" :class="['flexxy', { contracted: currentStepName }]" ref="scroller">
 					<div :id="step.name" class="step-wrapper" v-for="(step, index) in steps" :key="step.name">
@@ -29,6 +29,12 @@
 				</transition-group>
 			</draggable>
 		</v-layout>
+		<v-layout row v-else class="no-steps">
+			<v-flex md8>
+				<i class="fa fa-level-up" /> Start by adding a step.
+			</v-flex>
+		</v-layout>
+
 		<v-layout row>
 			<v-flex md12>
 				<flow-step
@@ -321,4 +327,16 @@ export default {
 	width: 250px;
 	display: flex;
 }
+
+.no-steps {
+	margin-top: 2em;
+	text-align: center;
+	justify-content: center;
+	.fa-level-up {
+		transform: scale(-1, 1);
+		font-size: 200%;
+		color: red;
+	}
+}
+
 </style>

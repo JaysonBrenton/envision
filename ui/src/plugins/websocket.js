@@ -27,7 +27,7 @@ export default {
 	},
 	connect() {
 		return new Promise((resolve, reject) => {
-			this.socket = new SockJS('http://localhost:9999/websocket')
+			this.socket = new SockJS('/websocket')
 			this.stompClient = Stomp.over(this.socket)
 			this.stompClient.connect(
 				{},

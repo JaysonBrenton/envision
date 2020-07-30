@@ -116,6 +116,10 @@ import { mapState, mapActions } from 'vuex'
 import flowsApi from '@/api/FlowsApi'
 import { required } from 'vuelidate/lib/validators'
 
+function noSpaces(value) {
+	return value.match(/^[a-zA-Z0-9_]+$/) !== null
+}
+
 export default {
 	props: {
 		flowName: { type: String },
@@ -183,7 +187,7 @@ export default {
 		})
 	},
 	validations: {
-    stepName: { required },
+    stepName: { required, noSpaces },
 		stepType: { required },
 		entityName: { required },
 		sourceCollection: { required },
@@ -230,7 +234,8 @@ export default {
 		inputErrors(field, fieldName) {
 			const errors = []
 			if (!this.$v[field].$dirty) return errors
-			!this.$v[field].required && errors.push(`${fieldName} is required.`)
+			this.$v[field].$invalid && this.$v[field].$params.hasOwnProperty('required') && !this.$v[field].required && errors.push(`${fieldName} is required.`)
+			this.$v[field].$invalid && this.$v[field].$params.hasOwnProperty('noSpaces') && !this.$v[field].noSpaces && errors.push(`${fieldName} cannot contain spaces. Only letters, numbers, and underscore.`)
 			return errors
 		},
 		addStep() {
@@ -256,7 +261,9 @@ export default {
 					outputFormat: this.outputFormat
 				},
 				customHook: {
-					module: '',
+					// default to use our custom uri remapper hook. it will
+					// allow 2 steps to run against the same input doc
+					module: '/envision/customHooks/uriRemapper.sjs',
 					parameters: {},
 					user: '',
 					runBefore: false

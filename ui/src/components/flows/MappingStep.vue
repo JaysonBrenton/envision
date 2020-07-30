@@ -195,32 +195,33 @@ export default {
 						if (!mappings[p.name]) {
 							mappings[p.name] = { sourcedFrom: '' }
 						}
+						const mapping = mappings[p.name]
 						let newP = {
 							...p,
 							parentName: parent && parent.name,
 							parent: parent,
 							indent,
 							type: p.datatype,
-							mapping: mappings[p.name],
-							xpath: mappings[p.name] && mappings[p.name].sourcedFrom,
+							mapping: mapping,
+							xpath: mapping && mapping.sourcedFrom,
 							value: values && values[p.name] && values[p.name].output,
 							error: values && values[p.name] && values[p.name].errorMessage,
 							expandable: false
 						}
 						props.push(newP)
 						const ref = (p.$ref || (p.items && p.items.$ref))
-						if (ref) {
+						if (ref && ref.startsWith('#')) {
 							newP.expandable = true
 							const splits = ref.split('/')
 							const refName = splits[splits.length - 1]
 							newP.type = refName
 							const nextEnt = this.entities[refName]
 							if (nextEnt) {
-								if (!newP.mapping.properties) {
-									newP.mapping.properties = {}
+								if (!mapping.properties) {
+									mapping.properties = {}
 								}
 								newP.children = nextEnt.properties.map(p => p.name.toLowerCase())
-								getProps(nextEnt, newP.mapping.properties, (values[newP.name] && values[newP.name].properties) || {}, newP, indent + 1)
+								getProps(nextEnt, mapping.properties, (values[newP.name] && values[newP.name].properties) || {}, newP, indent + 1)
 							}
 						}
 					})

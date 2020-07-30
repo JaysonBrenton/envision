@@ -5,7 +5,8 @@ var flowsToGet;
 flowsToGet = flowsToGet.toObject();
 
 const config = require("/com.marklogic.hub/config.sjs")
-const Jobs = require('/data-hub/5/impl/jobs.sjs')
+const DataHub = require("/data-hub/5/datahub.sjs");
+const datahub = new DataHub(config);
 
 let flows = fn.collection(['http://marklogic.com/data-hub/flow']).toArray()
 	.filter(flow => !xdmp.nodeUri(flow).match('/default-'))
@@ -18,8 +19,7 @@ if (flowsToGet) {
 const flowNames = flows.map(flow => flow.name)
 
 const jobs = fn.head(xdmp.invokeFunction(function() {
-	const jobs = new Jobs()
-	return jobs.getJobDocsForFlows(flowNames)
+	return datahub.jobs.getJobDocsForFlows(flowNames)
 }, {
 	database: xdmp.database(config.JOBDATABASE)
 }))

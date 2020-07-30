@@ -191,7 +191,7 @@ const routes = [
 ]
 
 if (isHosted || isTesting) {
-	routes.splice(2, 0, {
+	routes.splice(3, 0, {
 		path: '/integrate/:stepName?',	//url path
 		name: 'root.integrate', //use to navigate to page
 		// lazy-loading of page
