@@ -63,7 +63,9 @@
 									v-model="stepDescription"
 									data-cy="addStepDialog.stepDescField"
 								></v-text-field>
-								<v-select
+								<!--
+									disable for now to make it simpler
+									<v-select
 									:items="databases"
 									item-text="name"
 									label="Source Database"
@@ -84,7 +86,7 @@
 									:error-messages="inputErrors('targetDatabase', 'Target Database')"
 									@input="$v.targetDatabase.$touch()"
 									@blur="$v.targetDatabase.$touch()"
-								></v-select>
+								></v-select> -->
 								<v-select
 									:items="dataFormats"
 									label="Output Format"
