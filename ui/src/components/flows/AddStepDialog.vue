@@ -261,9 +261,7 @@ export default {
 					outputFormat: this.outputFormat
 				},
 				customHook: {
-					// default to use our custom uri remapper hook. it will
-					// allow 2 steps to run against the same input doc
-					module: '/envision/customHooks/uriRemapper.sjs',
+					module: '',
 					parameters: {},
 					user: '',
 					runBefore: false
@@ -280,6 +278,9 @@ export default {
           name : `${this.flowName}-${this.stepName}`,
           version : 1
 				}
+				// default to use our custom uri remapper hook. it will
+				// allow 2 steps to run against the same input doc
+				step.customHook.module = '/envision/customHooks/uriRemapper.sjs'
 				step.stepDefinitionName = 'entity-services-mapping'
 			}
 			else if (this.stepType === 'MATCHING') {
@@ -320,8 +321,7 @@ export default {
 								sourceWeights: [],
 								default: true
 							}
-						],
-						tripleMerge: {}
+						]
 					}
 				})
 				step.stepDefinitionName = 'default-merging'
