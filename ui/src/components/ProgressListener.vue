@@ -26,12 +26,7 @@ export default {
 	data() {
 		return {
 			hidden: true,
-			allProgresses: {
-				// "REDIAGTB.DATA33.CSV": {"key":"REDIAGTB.DATA33.CSV","message":"Processing REDIAGTB.DATA33.CSV...","error":null,"percentComplete":100},
-				// 'Stuff': {key: 'Stuff', message: 'Stuff happening', percentComplete: 40},
-				// 'Stuff2': {key: 'Stuff2', message: 'Stuff2 happening', percentComplete: 80},
-				// 'Stuff3': {key: 'Stuff3', status: 'Stuff3 happening', percentComplete: 100, error: 'Very Bad things have happened. You might want to check into it over there.'},
-			}
+			allProgresses: {}
 		}
 	},
 	computed: {
@@ -60,9 +55,6 @@ export default {
 				}
 				return status
 			})
-		},
-		showProgress() {
-			return true//this.percentComplete < 100
 		}
 	},
 	mounted() {

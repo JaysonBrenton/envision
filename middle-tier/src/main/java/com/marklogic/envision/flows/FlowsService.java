@@ -8,10 +8,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.envision.deploy.DeployService;
+import com.marklogic.envision.mastering.MasteringService;
 import com.marklogic.envision.pojo.StatusMessage;
 import com.marklogic.hub.FlowManager;
 import com.marklogic.hub.MappingManager;
 import com.marklogic.hub.flow.Flow;
+import com.marklogic.hub.flow.FlowInputs;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
 import com.marklogic.hub.mapping.Mapping;
 import com.marklogic.hub.step.impl.Step;
@@ -33,7 +35,14 @@ public class FlowsService {
 	final private SimpMessagingTemplate template;
 
 	@Autowired
-	FlowsService(FlowManager flowManager, MappingManager mappingManager, DeployService deployService, FlowRunnerImpl flowRunner, SimpMessagingTemplate template) {
+	FlowsService(
+		FlowManager flowManager,
+		MappingManager mappingManager,
+		DeployService deployService,
+		FlowRunnerImpl flowRunner,
+		SimpMessagingTemplate template
+	) {
+
 		this.flowManager = flowManager;
 		this.mappingManager = mappingManager;
 		this.deployService = deployService;
@@ -41,7 +50,7 @@ public class FlowsService {
 		this.template = template;
 		this.flowRunner.onStatusChanged((jobId, step, jobStatus, percentComplete, successfulEvents, failedEvents, message) -> {
 			StatusMessage msg = StatusMessage.newStatus(jobId)
-				.withMessage(message + ":: " + jobStatus)
+				.withMessage(message)
 				.withPercentComplete(percentComplete);
 			this.template.convertAndSend("/topic/status", msg);
 		});
@@ -151,8 +160,9 @@ public class FlowsService {
 	public void runSteps(String flowName, JsonNode steps) {
 		try {
 			ObjectReader reader = mapper.readerFor(new TypeReference<List<String>>() {});
-			List<String> stepsList = reader.readValue(steps);
-			flowRunner.runFlow(flowName, stepsList);
+			String[] stepsList = reader.readValue(steps);
+			FlowInputs inputs = new FlowInputs(flowName, stepsList);
+			flowRunner.runFlow(inputs);
 		}
 		catch(Exception e) {
 			throw new RuntimeException("invalid steps");

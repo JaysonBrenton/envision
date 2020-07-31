@@ -65,22 +65,6 @@ const routes = [
 		meta: {}
 	},
 	{
-		path: '/upload',
-		name: 'root.upload',
-		// lazy-loading of page
-		component: () =>
-			import(/* webpackChunkName: "upload" */ './views/UploadPage.vue'),
-		props: {
-			type: 'all'
-		},
-		meta: {
-			label: 'Upload',
-			navArea: 'header',
-			requiresUpdates: true,
-			checkLogin
-		}
-	},
-	{
 		path: '/model',	//url path
 		name: 'root.modeler', //use to navigate to page
 		// lazy-loading of page
@@ -191,6 +175,23 @@ const routes = [
 ]
 
 if (isHosted || isTesting) {
+	routes.splice(1, 0, {
+		path: '/upload',
+		name: 'root.upload',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "upload" */ './views/UploadPage.vue'),
+		props: {
+			type: 'all'
+		},
+		meta: {
+			label: 'Upload',
+			navArea: 'header',
+			requiresUpdates: true,
+			checkLogin
+		}
+	})
+
 	routes.splice(3, 0, {
 		path: '/integrate/:stepName?',	//url path
 		name: 'root.integrate', //use to navigate to page
